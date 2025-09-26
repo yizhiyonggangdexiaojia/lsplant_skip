@@ -55,9 +55,12 @@ consteval inline auto GetTrampoline() {
     }
     if constexpr (kArch == Arch::kArm64) {
         return std::make_tuple(
-            "\x60\x00\x00\x58\x10\x00\x40\xf8\x00\x02\x1f\xd6\x78\x56\x34\x12\x78\x56\x34\x12"_uarr,
-            // NOLINTNEXTLINE
-            uint8_t{44u}, uintptr_t{12u});
+            "\x1f\x20\x03\xd5\x1f\x20\x03\xd5\x1f\x20\x03\xd5\x1f\x20\x03\xd5"
+            "\x60\x00\x00\x58\x10\x00\x40\xf8\x00\x02\x1f\xd6"
+            "\x78\x56\x34\x12\x78\x56\x34\x12"_uarr,
+            uint8_t{172u},   // entry_point_offset
+            uintptr_t{28u}   // art_method_offset;
+        );
     }
     if constexpr (kArch == Arch::kX86) {
         return std::make_tuple("\xb8\x78\x56\x34\x12\xff\x70\x00\xc3"_uarr,

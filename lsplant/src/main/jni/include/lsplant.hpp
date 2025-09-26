@@ -52,14 +52,16 @@ struct InitInfo {
 
     /// \brief The generated class name. Must not be empty. It contains a field and a method
     /// and they could be set by \p generated_field_name and \p generated_method_name respectively.
-    std::string_view generated_class_name = "LSPHooker_";
+    std::string_view generated_class_name = "AndroidHelper_";
     /// \brief The generated source name. Could be empty.
-    std::string_view generated_source_name = "LSP";
+    std::string_view generated_source_name = "AH";
     /// \brief The generated field name. Must not be empty.
-    std::string_view generated_field_name = "hooker";
+    std::string_view generated_field_name = "handler";
     /// \brief The generated class name. Must not be emtpy. If {target} is set,
     /// it will follows the name of the target.
     std::string_view generated_method_name = "{target}";
+//    添加一个判断是否不hook这个libart，默认就是跳过
+    bool skip_libart = true;
 };
 
 /// \brief Initialize LSPlant for the proceeding hook.

@@ -169,12 +169,20 @@ concept HookerType = requires(T a) {
 template <HookerType T>
 inline static bool HookSymNoHandle(const HookHandler &handler, void *original, T &arg) {
     if (original) {
-        if constexpr (is_instance_v<decltype(arg.backup), MemberFunction>) {
-            void *backup = handler.inline_hooker(original, reinterpret_cast<void *>(arg.replace));
-            arg.backup = reinterpret_cast<typename decltype(arg.backup)::FunType>(backup);
+        if (!handler.skip_libart){
+            if constexpr (is_instance_v<decltype(arg.backup), MemberFunction>) {
+                void *backup = handler.inline_hooker(original, reinterpret_cast<void *>(arg.replace));
+                arg.backup = reinterpret_cast<typename decltype(arg.backup)::FunType>(backup);
+            } else {
+                arg.backup = reinterpret_cast<decltype(arg.backup)>(
+                        handler.inline_hooker(original, reinterpret_cast<void *>(arg.replace)));
+            }
         } else {
-            arg.backup = reinterpret_cast<decltype(arg.backup)>(
-                handler.inline_hooker(original, reinterpret_cast<void *>(arg.replace)));
+            if constexpr (is_instance_v<decltype(arg.backup), MemberFunction>) {
+                arg.backup = reinterpret_cast<typename decltype(arg.backup)::FunType>(original);
+            } else {
+                arg.backup = reinterpret_cast<decltype(arg.backup)>(original);
+            }
         }
         return true;
     } else {
